@@ -6,10 +6,33 @@ author: ebertrams
 
 # Custom Vision + Azure IoT Edge on a Raspberry Pi 3
 
+## Get started
+
+0. Clone this repo `git clone https://github.com/Iamnvincible/Custom-vision-service-iot-edge-raspberry-pi.git`
+1. Create an Azure Iot Hub
+2. Create an IoT Edge device in your Iot Hub, and note your device's **Connection String** for further use.
+3. Install Azure IoT Edge on RaspberryPi(ARM32v7/armhf), you can visit [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux-arm) for more infomation. Simply, you can just follow my steps.
+
+    Install Docker,run  `wget -qO- https://get.docker.com/ | sh`.
+    Install&Configure IoT Edge Security Daemon, please follow the steps at [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux-arm#install-the-iot-edge-security-daemon).
+4. Navigate to your device detail page on Azure Portal, you may see two modules, named $edgeAgent and $edgeHub.
+
+
+
+
+
+
+
+
+
+
+
 > [!NOTE]
 > This sample still uses the IoT Edge Preview bits. To use it with the new IoT Edge GA bits, you will need to update the **Camera capture** and **SenseHat display** modules manually to use the latest IoT SDK versions. The **Custom vision** should remain the same. 
 
-This is a sample showing how to deploy a Custom Vision model to a Raspberry Pi 3 device running Azure IoT Edge. This solution is made of 3 modules:
+This is a sample showing how to deploy a Custom
+
+ Vision model to a Raspberry Pi 3 device running Azure IoT Edge. This solution is made of 3 modules:
 
 - **Camera capture** - this module captures the video stream from a USB camera, sends the frames for analysis to the custom vision module and shares the output of this analysis to the edgeHub. This module is written in python and uses [OpenCV](https://opencv.org/) to read the video feed.
 - **Custom vision** - it is a web service over HTTP running locally that takes in images and classifies them based on a custom model built via the [Custom Vision website](https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/). This module has been exported from the Custom Vision website and slightly modified to run on a ARM architecture. You can modify it by updating the model.pb and label.txt files to update the model.

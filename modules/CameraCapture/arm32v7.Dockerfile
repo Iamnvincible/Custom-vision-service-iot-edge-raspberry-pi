@@ -3,7 +3,7 @@ FROM mohaseeb/raspberrypi3-python-opencv:latest
 #This image include a pre-compiled version of OpenCV. It is based on python 2.7.
 
 #Enforces cross-compilation through Quemu
-RUN [ "cross-build-start" ]
+#RUN [ "cross-build-start" ]
 
 #update list of packages available
 RUN apt-get update
@@ -18,9 +18,10 @@ RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools 
 RUN pip install -r arm32v7-requirements.txt
 
-RUN [ "cross-build-end" ]  
+#RUN [ "cross-build-end" ]  
 
 ADD /app/ .
 ADD /build/ . 
+ADD /test/ .
 
 CMD [ "python", "-u", "./main.py" ]

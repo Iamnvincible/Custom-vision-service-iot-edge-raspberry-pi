@@ -52,7 +52,7 @@ class HubManager(object):
         self.client.set_option("messageTimeout", self.messageTimeout)
         if verbose:
             self.client.set_option("logtrace", 1)#enables MQTT logging
-        self.set_certificates()# some embedded platforms need certificate information
+        #self.set_certificates()# some embedded platforms need certificate information
 
     def set_certificates(self):
         isWindows = sys.platform.lower() in ['windows', 'win32']
@@ -126,12 +126,12 @@ def __convertStringToBool(env):
 
 if __name__ == '__main__':
     try:
-        CONNECTION_STRING = os.environ['EdgeHubConnectionString']
-        VIDEO_PATH = os.environ['VIDEO_PATH']
-        IMAGE_PROCESSING_ENDPOINT = os.getenv('IMAGE_PROCESSING_ENDPOINT', "")
+        CONNECTION_STRING = 'HostName=CVedge.azure-devices.net;DeviceId=BoPi;SharedAccessKey=PJZzK9Pz/B2negjXajq6poV+BLoI2solmL0R71kcMYA='
+        VIDEO_PATH = 'AppleAndBanana.mp4'
+        IMAGE_PROCESSING_ENDPOINT = os.getenv('IMAGE_PROCESSING_ENDPOINT', "raspberrypi:80/image")
         IMAGE_PROCESSING_PARAMS = os.getenv('IMAGE_PROCESSING_PARAMS', "")
         SHOW_VIDEO = __convertStringToBool(os.getenv('SHOW_VIDEO', 'False'))
-        VERBOSE = __convertStringToBool(os.getenv('VERBOSE', 'False'))
+        VERBOSE = __convertStringToBool(os.getenv('VERBOSE', 'True'))
         LOOP_VIDEO = __convertStringToBool(os.getenv('LOOP_VIDEO', 'True'))
         CONVERT_TO_GRAY = __convertStringToBool(os.getenv('CONVERT_TO_GRAY', 'False'))
         RESIZE_WIDTH = int(os.getenv('RESIZE_WIDTH', 0))
