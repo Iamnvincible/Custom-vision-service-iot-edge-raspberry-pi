@@ -16,17 +16,82 @@ author: ebertrams
     Install Docker,run  `wget -qO- https://get.docker.com/ | sh`.
     Install&Configure IoT Edge Security Daemon, please follow the steps at [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux-arm#install-the-iot-edge-security-daemon).
 4. Navigate to your device detail page on Azure Portal, you may see two modules, named $edgeAgent and $edgeHub.
+5. Build Container
 
+Go to Custom-vision-service-iot-edge-raspberry-pi/modules/CameraCapture/app, open `main.py` file and add your device's connection string at line 129. And replace `raspberrypi:80/image` in filed `IMAGE_PROCESSING_ENDPOINT` with your device's real ip, such as `http://192.168.3.4`.Don't forget to save it. Then return to `CameraCapture` folder. Run this command.
+```
+sudo docker build -t camera -f arm32v7.Dockerfile .
+```
+ That will take a few minutes.
 
+Go to ImageClassifierService folder, run a similar command.
 
+```
+sudo docker build -t classifier -f arm32v7.Dockerfile .
+```
 
+6. Test
+Please open two bash windows, in one window run this command.
+```
+sudo docker run -p 80:80 classifier
+```
+In another one run this command.
+```
+sudo docker run camera
+```
+You can see log printed in both windwos.
 
+7. Kill containers
+```
+sudo docker ps
+```
+Note the container id listed.
+The use this command to kill container.
+```
+sudo docker kill <containid>
+```
 
+8. Create ACR in your Azure portal and turn admin mode, note your username and password.
 
+9. Push images to ACR
+Login.
+```
+sudo docker login <your_registry>.azurecr.io -u username -p password
+```
+Tag image.
+```
+sudo docker tag camera <your_registry>.azurecr.io/camera
+```
+Push image.
+```
+sudo docker push <your_registry>.azurecr.io/camera
+```
+Similarly, push another one.
+```
+sudo docker tag classifier <your_registry>.azurecr.io/classifier
 
+sudo docker push <your_registry>.azurecr.io/classifier
+```
+10. Set modules
 
+Go to your IoT device's page, click `set modules` button, set your ACR info first, and add an IoT Edge Module, fill the image url with `<your_registry>.azurecr.io/classifier` and in the `Container Create Options
+` cell fill it with 
+```
+{"HostConfig":{"PortBindings":{"80/tcp":[{"HostPort": "80"}]}}}
+```
+click next and then submit.
 
+And now add the camera module, similarly, fill the image url with `<your_registry>.azurecr.io/camera` and submit it.
 
+A few minutes later, you can see your modules in device page with status `running`.
+
+Also you can use command `sudo iotedge list` on your device to see modules' status.
+
+11. Monitor D2C message
+
+If you installed 'Azure IoT Hub` extension in you VS Code, you can monitor Device to Cloud message easily.
+
+### Original README
 > [!NOTE]
 > This sample still uses the IoT Edge Preview bits. To use it with the new IoT Edge GA bits, you will need to update the **Camera capture** and **SenseHat display** modules manually to use the latest IoT SDK versions. The **Custom vision** should remain the same. 
 
